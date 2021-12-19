@@ -20,8 +20,8 @@ class FamilyStructure:
         return randint(0, 99999999)
 
     def add_member(self, member):
-        # fill this method and update the return
-        pass
+        _members.append(member)
+        
 
     def delete_member(self, id):
         # fill this method and update the return
