@@ -39,17 +39,20 @@ def handle_hello():
 
 @app.route('/member', methods=['POST'])
 def add_member():
+    _id = jackson_family._generateId()
     name = request.json.get('name')
     last_name = jackson_family.last_name
-    _id = jackson_family._generateId()
+    age = request.json.get('age')
+    lucky_numbers = request.json.get('lucky_numbers')
 
     member = {
         id: _id,
         name: name,
-        last_name: last_name
+        last_name: last_name,
+        age: age,
     }
 
-    if name == '' or name == None or type(name) is not str:
+    if name == '' or name == None or age == '' or age == None or type(name) is not str or type(age) is not str or lucky_numbers == None or type(lucky_numbers) is not int:
         response_body = {
             "msg": "Bad request. Please check the information submited"
         }
