@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from datastructures import FamilyStructure
-#from models import Person
+import random
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -43,16 +43,17 @@ def add_member():
     name = request.json.get('name')
     last_name = jackson_family.last_name
     age = request.json.get('age')
-    lucky_numbers = request.json.get('lucky_numbers')
+    lucky_numbers = random.sample(range(0, 100), 5)
 
     member = {
         id: _id,
         name: name,
         last_name: last_name,
         age: age,
+        lucky_numbers: lucky_numbers
     }
 
-    if name == '' or name == None or age == '' or age == None or type(name) is not str or type(age) is not str or lucky_numbers == None or type(lucky_numbers) is not int:
+    if name == '' or name == None or age == '' or age == None or type(name) is not str or type(age) is not str:
         response_body = {
             "msg": "Bad request. Please check the information submited"
         }
