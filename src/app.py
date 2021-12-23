@@ -37,23 +37,23 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@app.route('/member', methods=['POST'])
+@app.route('/add-member', methods=['POST'])
 def add_member():
     _id = jackson_family._generateId()
     name = request.json.get('name')
     last_name = jackson_family.last_name
     age = request.json.get('age')
-    lucky_numbers = random.sample(range(0, 100), 5)
+    lucky_numbers = tuple(random.sample(range(0, 100), 5))
 
     member = {
-        id: _id,
-        name: name,
-        last_name: last_name,
-        age: age,
-        lucky_numbers: lucky_numbers
+        "id": _id,
+        "first_name": name,
+        "last_name": last_name,
+        "age": '{member_age} years old'.format(member_age=age),
+        "lucky_numbers": lucky_numbers
     }
 
-    if name == '' or name == None or age == '' or age == None or type(name) is not str or type(age) is not str:
+    if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
         response_body = {
             "msg": "Bad request. Please check the information submited"
         }
@@ -67,6 +67,34 @@ def add_member():
     }
 
     return jsonify(response_body), 200
+
+@app.route('/delete-member/<int:id>', methods=['DELETE'])
+def delete_family_member(id):
+    _id = id
+    members = jackson_family.get_all_members()
+
+    if _id == None or type(_id) is not int:
+        response_body = {
+            "msg": "Bad request. Please check the information submited"
+        }
+
+        return jsonify(response_body), 400 
+
+    for member in members:
+        if _id in member.values():
+            jackson_family.delete_member(_id)
+
+            response_body = {
+                "msg": "Member deleted"
+            }
+
+            return jsonify(response_body), 200
+        else:    
+            response_body = {
+                "msg": "Member does not exist. Please enter a valid ID"
+            }
+
+            return jsonify(response_body), 404
 
 
 # this only runs if `$ python src/app.py` is executed
