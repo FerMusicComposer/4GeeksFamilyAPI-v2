@@ -24,7 +24,6 @@ class FamilyStructure:
         
 
     def delete_member(self, id):
-        # fill this method and update the return
         _id = id
         members = self.get_all_members()
 
@@ -34,8 +33,17 @@ class FamilyStructure:
 
             return members
 
+    def update_member(self, id, name, age):
+        _id = id
+        members = self.get_all_members()
+
+        for member in members:
+            if member['id'] == _id:
+                member['name'] = name
+                member['age'] = "{age} years old"
+
+
     def get_member(self, id):
-        # fill this method and update the return
         _id = id
         members = self.get_all_members()
 
@@ -43,6 +51,5 @@ class FamilyStructure:
             if member['id'] == _id:
                 return member
 
-    # this method is done, it returns a list with all the family members
     def get_all_members(self):
         return self._members

@@ -37,6 +37,29 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@app.route('/member/<int:id>', methods=['GET'])
+def get_member_by_id(id):
+    _id = id
+    members = jackson_family.get_all_members()
+
+    for member in members:
+        if _id in member.values():
+            member = jackson_family.get_member(_id)
+
+            response_body = {
+                "member": member
+            }
+
+            return jsonify(response_body), 200
+
+        else:    
+            response_body = {
+                "msg": "Member does not exist. Please enter a valid ID"
+            }
+
+            return jsonify(response_body), 404
+
+
 @app.route('/add-member', methods=['POST'])
 def add_member():
     _id = jackson_family._generateId()
@@ -73,13 +96,6 @@ def delete_family_member(id):
     _id = id
     members = jackson_family.get_all_members()
 
-    if _id == None or type(_id) is not int:
-        response_body = {
-            "msg": "Bad request. Please check the information submited"
-        }
-
-        return jsonify(response_body), 400 
-
     for member in members:
         if _id in member.values():
             jackson_family.delete_member(_id)
@@ -89,6 +105,38 @@ def delete_family_member(id):
             }
 
             return jsonify(response_body), 200
+
+        else:    
+            response_body = {
+                "msg": "Member does not exist. Please enter a valid ID"
+            }
+
+            return jsonify(response_body), 404
+
+@app.route('/update-member/<int:id>', methods=['PUT'])
+def update_selected_member(id):
+    _id = id
+    name = request.json.get("name")
+    age = request.json.get("age")
+    members = jackson_family.get_all_members()
+
+    for member in members:
+        if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
+            response_body = {
+                "msg": "Bad request. Please check the information submited"
+            }
+
+            return jsonify(response_body), 400 
+
+        elif _id in member.values():
+            jackson_family.update_member(id, name, age)
+
+            response_body = {
+                "msg": "Member updated!"
+            }
+
+            return jsonify(response_body), 200
+            
         else:    
             response_body = {
                 "msg": "Member does not exist. Please enter a valid ID"
