@@ -26,10 +26,9 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/members', methods=['GET'])
-def handle_hello():
-
-    # this is how you can use the Family datastructure by calling its methods
+def get_members():
     members = jackson_family.get_all_members()
+
     response_body = {
         "family": members
     }
@@ -42,22 +41,21 @@ def get_member_by_id(id):
     _id = id
     members = jackson_family.get_all_members()
 
-    for member in members:
-        if _id in member.values():
-            member = jackson_family.get_member(_id)
+    if any(member['id'] == _id for member in members):
+        member = jackson_family.get_member(_id)
 
-            response_body = {
-                "member": member
-            }
+        response_body = {
+            "member": member
+        }
 
-            return jsonify(response_body), 200
+        return jsonify(response_body), 200
 
-        else:    
-            response_body = {
-                "msg": "Member does not exist. Please enter a valid ID"
-            }
+    else:    
+        response_body = {
+            "msg": "Member does not exist. Please enter a valid ID"
+        }
 
-            return jsonify(response_body), 404
+        return jsonify(response_body), 404
 
 
 @app.route('/add-member', methods=['POST'])
@@ -96,22 +94,23 @@ def delete_family_member(id):
     _id = id
     members = jackson_family.get_all_members()
 
-    for member in members:
-        if _id in member.values():
-            jackson_family.delete_member(_id)
+    if any(member['id'] == _id for member in members):
+            member = jackson_family.delete_member(_id)
 
             response_body = {
-                "msg": "Member deleted"
+                "msg": "Member deleted!"
             }
 
             return jsonify(response_body), 200
 
-        else:    
-            response_body = {
-                "msg": "Member does not exist. Please enter a valid ID"
-            }
+    else:    
+        response_body = {
+            "msg": "Member does not exist. Please enter a valid ID"
+        }
 
-            return jsonify(response_body), 404
+        return jsonify(response_body), 404
+
+    
 
 @app.route('/update-member/<int:id>', methods=['PUT'])
 def update_selected_member(id):
@@ -120,29 +119,27 @@ def update_selected_member(id):
     age = request.json.get("age")
     members = jackson_family.get_all_members()
 
-    for member in members:
-        if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
+    if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
             response_body = {
                 "msg": "Bad request. Please check the information submited"
             }
 
             return jsonify(response_body), 400 
 
-        elif _id in member.values():
-            jackson_family.update_member(id, name, age)
+    if any(member['id'] == _id for member in members):
+            jackson_family.update_member(_id, name, age)
 
             response_body = {
                 "msg": "Member updated!"
             }
 
             return jsonify(response_body), 200
-            
-        else:    
-            response_body = {
-                "msg": "Member does not exist. Please enter a valid ID"
-            }
+    else:  
+        response_body = {
+            "msg": "Member does not exist. Please enter a valid ID"
+        }
 
-            return jsonify(response_body), 404
+        return jsonify(response_body), 404
 
 
 # this only runs if `$ python src/app.py` is executed

@@ -39,8 +39,8 @@ class FamilyStructure:
 
         for member in members:
             if member['id'] == _id:
-                member['name'] = name
-                member['age'] = "{age} years old"
+                member['first_name'] = name
+                member['age'] = "{member_age} years old".format(member_age=age)
 
 
     def get_member(self, id):
