@@ -61,7 +61,7 @@ def add_member():
     name = request.json.get('name')
     last_name = jackson_family.last_name
     age = request.json.get('age')
-    lucky_numbers = tuple(random.sample(range(0, 100), 5))
+    lucky_numbers = tuple(random.sample(range(0, 100), 3))
 
     member = {
         "id": _id,
