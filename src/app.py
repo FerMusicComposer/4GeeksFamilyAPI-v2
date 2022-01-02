@@ -29,10 +29,7 @@ def sitemap():
 def get_members():
     members = jackson_family.get_all_members()
 
-    response_body = {
-        "family": members
-    }
-
+    response_body = members
 
     return jsonify(response_body), 200
 
