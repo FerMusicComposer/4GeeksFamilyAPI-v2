@@ -35,15 +35,11 @@ def get_members():
 
 @app.route('/member/<int:id>', methods=['GET'])
 def get_member_by_id(id):
-    _id = id
-    members = jackson_family.get_all_members()
+    member = jackson_family.get_member(id)
 
-    if any(member['id'] == _id for member in members):
-        member = jackson_family.get_member(_id)
-
-        response_body = {
-            "member": member
-        }
+    if member:
+        response_body =  member
+        
 
         return jsonify(response_body), 200
 
@@ -55,88 +51,26 @@ def get_member_by_id(id):
         return jsonify(response_body), 404
 
 
-@app.route('/add-member', methods=['POST'])
+@app.route('/member', methods=['POST'])
 def add_member():
-    _id = jackson_family._generateId()
-    name = request.json.get('name')
-    last_name = jackson_family.last_name
-    age = request.json.get('age')
-    lucky_numbers = tuple(random.sample(range(0, 100), 3))
+    first_name = request.json.get("first_name", None)
+    age = request.json.get("age", None)
+    lucky_numbers = request.json.get("lucky_numbers", None)
+    id = request.json.get("id", None)
 
-    member = {
-        "id": _id,
-        "first_name": name,
-        "last_name": last_name,
-        "age": '{member_age} years old'.format(member_age=age),
-        "lucky_numbers": lucky_numbers
-    }
-
-    if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
-        response_body = {
-            "msg": "Bad request. Please check the information submited"
-        }
-
-        return jsonify(response_body), 400 
+    if id is None: 
+        id: jackson_family._generateId()
     
+    member = {"first_name": first_name, "age": age, "lucky_numbers": lucky_numbers, "id": id}
     jackson_family.add_member(member)
 
-    response_body = {
-        "msg": "Member added successfully!"
-    }
+    return jsonify(), 200
 
-    return jsonify(response_body), 200
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def delete_family_member(member_id):
+    jackson_family.delete_member(member_id)
 
-@app.route('/delete-member/<int:id>', methods=['DELETE'])
-def delete_family_member(id):
-    _id = id
-    members = jackson_family.get_all_members()
-
-    if any(member['id'] == _id for member in members):
-            member = jackson_family.delete_member(_id)
-
-            response_body = {
-                "msg": "Member deleted!"
-            }
-
-            return jsonify(response_body), 200
-
-    else:    
-        response_body = {
-            "msg": "Member does not exist. Please enter a valid ID"
-        }
-
-        return jsonify(response_body), 404
-
-    
-
-@app.route('/update-member/<int:id>', methods=['PUT'])
-def update_selected_member(id):
-    _id = id
-    name = request.json.get("name")
-    age = request.json.get("age")
-    members = jackson_family.get_all_members()
-
-    if name == '' or name == None or age == None or type(name) is not str or type(age) is not int:
-            response_body = {
-                "msg": "Bad request. Please check the information submited"
-            }
-
-            return jsonify(response_body), 400 
-
-    if any(member['id'] == _id for member in members):
-            jackson_family.update_member(_id, name, age)
-
-            response_body = {
-                "msg": "Member updated!"
-            }
-
-            return jsonify(response_body), 200
-    else:  
-        response_body = {
-            "msg": "Member does not exist. Please enter a valid ID"
-        }
-
-        return jsonify(response_body), 404
+    return jsonify({"done":True}), 200
 
 
 # this only runs if `$ python src/app.py` is executed

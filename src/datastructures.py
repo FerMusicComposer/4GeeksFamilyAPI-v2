@@ -19,21 +19,21 @@ class FamilyStructure:
                 "first_name" : "John",
                 "last_name" :  last_name,
                 "age" : "33 years old",
-                "lucky_numbers": tuple(random.sample(range(0, 100), 3))
+                "lucky_numbers": [1,2],
             },
             {
                 "id" : self._generateId(),
                 "first_name" : "Jane",
                 "last_name" : last_name,
                 "age" : "35 years old",
-                "lucky_numbers": tuple(random.sample(range(0, 100), 3))
+                "lucky_numbers": [1,2],
             },
             {
                 "id" : self._generateId(),
                 "first_name" : "Jimmy",
                 "last_name" : last_name,
                 "age" : "5 years old",
-                "lucky_numbers": tuple(random.sample(range(0, 100), 3))
+                "lucky_numbers": [1,2],
             } 
         ]
 
@@ -46,14 +46,11 @@ class FamilyStructure:
         
 
     def delete_member(self, id):
-        _id = id
-        members = self.get_all_members()
-
-        for member in members:
-            if member['id'] == _id:
-                members.remove(member)
-
-            return members
+        for member in self._members:
+            if member['id'] == id:
+                break
+        
+        self._members.remove(member)
 
     def update_member(self, id, name, age):
         _id = id
